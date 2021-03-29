@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.EInvoiceListRes;
 import com.example.demo.util.ExcleUtil;
 import io.swagger.annotations.ApiOperation;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -12,9 +13,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -77,8 +76,9 @@ public class DownController {
         while ((len = fileInputStream.read(bytes, 0, bytes.length)) != -1) {
             byteArrayOutputStream.write(bytes, 0, len);
         }
-        byteArrayOutputStream.close();
+
         fileByte = byteArrayOutputStream.toByteArray();
+
 
         Resource resource = new InputStreamResource(
                 new ByteArrayInputStream(fileByte));
