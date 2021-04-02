@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.util.SpringContextUtil;
-import org.springframework.core.io.ClassPathResource;
+import sun.plugin.javascript.ReflectUtil;
 
 import java.io.InputStream;
 import java.util.Properties;
@@ -17,9 +16,14 @@ public class AbsFactory {
 
     public static Object createByType(String createName) {
         try {
-            FactoryConfig factoryConfig = (FactoryConfig) SpringContextUtil.getBean("factoryConfig");
-            String account_service = factoryConfig.getAccount_service();
-            obj = Class.forName(account_service).newInstance();
+           // FactoryConfig factoryConfig = (FactoryConfig) SpringContextUtil.getBean("factoryConfig");
+           // String account_service = factoryConfig.getAccount_service();
+            Properties properties = new Properties();
+            ClassLoader classLoader = ReflectUtil.class.getClassLoader();
+            InputStream stream = classLoader.getResourceAsStream("factory.properties");
+            properties.load(stream);
+            String property = properties.getProperty(createName);
+            obj = Class.forName(property).newInstance();
         } catch (Exception e) {
         } finally {
             return obj;

@@ -14,6 +14,9 @@ public class Dynamic {
         System.out.println("执行静态代码块"+age);
     }
 
+    public Dynamic() {
+    }
+
     public Dynamic(String name) {
         this.name = name;
         System.out.println("执行构造函数"+name);
