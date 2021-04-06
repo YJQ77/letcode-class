@@ -94,7 +94,7 @@ public class DownController {
         String[] title = {"name","age","sex"};
         List<Map<String,Object>> maps = new ArrayList<>();
         Map<String,Object> map = null;
-        for (int i = 0;i<3;i++){
+        for (int i = 0;i<1000000;i++){
             map = new HashMap<>();
             map.put("0",i+"a");
             map.put("1",i+"b");
@@ -102,8 +102,8 @@ public class DownController {
             maps.add(map);
         }
 
-        XSSFWorkbook wb = ExcleUtil.getXSSFWorkbook("test", title, maps, null);
-         wb = ExcleUtil.getXSSFWorkbook("test2", title, maps, wb);
+        SXSSFWorkbook wb = ExcleUtil.getSXSSFWorkbook("test", title, maps, null);
+        // wb = ExcleUtil.getXSSFWorkbook("test2", title, maps, wb);
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentDispositionFormData("attachment", URLEncoder.encode("test.xlsx", "UTF-8"));
