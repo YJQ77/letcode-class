@@ -1,16 +1,24 @@
 package com.example.demo.study.fanxing;
 
+import com.example.demo.elsfk.fk.L;
 import com.example.demo.study.fanxing.FanXing;
 import com.example.demo.study.fanxing.Student;
 import com.example.demo.study.fanxing.Teacher;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -28,6 +36,13 @@ public class Main {
         Student student = new Student();
         Student student1 = FanXing.setName(student);
         System.out.println(student1.getName());
+
+        Calendar instance = Calendar.getInstance();
+        int currentYear = instance.get(Calendar.YEAR);
+        instance.add(Calendar.YEAR, -3);
+        Date time = instance.getTime();
+        String format = new SimpleDateFormat("yyyy-MM-dd 00:00:00").format(time);
+        System.out.println(format);
 
         Teacher teacher = new Teacher();
         Teacher teacher1 = FanXing.setName(teacher);
@@ -52,7 +67,20 @@ public class Main {
         });
         list2.forEach(System.out::println);
 
+        Collection<Student> collect1 = list.stream()
+                .collect(Collectors.toMap(Student::getName,
+                        Function.identity(), (oldVal, newVal) -> newVal)).values();
+        collect1.forEach(System.out::println);
+
         List<Integer> numList = Arrays.asList(1, 2, 3, 4, 5);
+        List<Integer> newList = Arrays.asList(6,7,9,8,7,5);
+        LinkedList<Integer> linkedList = new LinkedList<>();
+        linkedList.addAll(newList);
+        linkedList.addAll(numList);
+        linkedList.forEach(System.out::println);
+
+
+
         int result = numList.stream().reduce(1, (a, b) -> a + b);
         System.out.println(result);
 

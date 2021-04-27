@@ -1,4 +1,4 @@
-package com.example.demo.study.proxy.mybatis;
+package com.example.demo.study.proxy;
 
 /**
  * 描述：

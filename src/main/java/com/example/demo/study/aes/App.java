@@ -1,4 +1,4 @@
-package com.example.demo.study.jiami;
+package com.example.demo.study.aes;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 

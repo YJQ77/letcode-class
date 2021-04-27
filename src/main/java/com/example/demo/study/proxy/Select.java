@@ -1,4 +1,4 @@
-package com.example.demo.study.proxy.mybatis;
+package com.example.demo.study.proxy;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
