@@ -1,5 +1,8 @@
-package com.example.demo.eip;
+package com.example.demo.service.impl;
 
+import com.example.demo.eip.DataModel;
+import com.example.demo.eip.QymcNameEnum;
+import com.example.demo.service.DataModelService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,16 +10,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
 
 /**
  * 描述：
  *
  * @author yinjiaqi
- * @date 2021/5/28 14:04
+ * @date 2021/6/7 9:57
  */
-public class Main {
+@Service
+public class DataModelServiceImpl implements DataModelService {
 
-    public static void main(String[] args) {
+    @Override
+    public List<DataModel> getList() {
         List<DataModel> list = new ArrayList<>();
         list.add(new DataModel("330100", 2, 1, 2, 1));
         list.add(new DataModel("330102", 2, 1, 2, 1));
@@ -49,7 +55,7 @@ public class Main {
             List<DataModel> value = entry.getValue();
             DataModel temp = new DataModel();
             value.forEach(e -> temp.add2(e));
-          //  DataModel model = value.stream().reduce((x, y) -> x.add3(y)).get();
+            //  DataModel model = value.stream().reduce((x, y) -> x.add3(y)).get();
             //map1.put(entry.getKey()+"00",value.stream().reduce((x,y) -> x.add(y)).get());
             map1.put(entry.getKey() + "00", temp);
         }
@@ -57,6 +63,7 @@ public class Main {
         List<DataModel> list3 = new ArrayList<>();
         DataModel total = new DataModel();
         total.setQydm("000000");
+        total.setQydmName("总计");
         list3.add(total);
         DataModel model = null;
         for (String s : code) {
@@ -75,8 +82,10 @@ public class Main {
                 model.setKpzj();
             }
             model.setQydm(s);
+            model.setQydmName(QymcNameEnum.getNameByCode(s));
             list3.add(model);
         }
-        list3.forEach(System.out::println);
+        //list3.forEach(System.out::println);
+        return list3;
     }
 }

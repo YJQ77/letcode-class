@@ -96,9 +96,9 @@ public class DownController {
         Map<String,Object> map = null;
         for (int i = 0;i<1000000;i++){
             map = new HashMap<>();
-            map.put("0",i+"a");
-            map.put("1",i+"b");
-            map.put("2",i+"c");
+            map.put("合计",i+"a");
+            map.put("省本级",i+"b");
+            map.put("杭州市",i+"c");
             maps.add(map);
         }
 
