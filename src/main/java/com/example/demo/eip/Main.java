@@ -1,5 +1,6 @@
 package com.example.demo.eip;
 
+import com.example.demo.util.clazz.DtoToMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,8 +34,7 @@ public class Main {
         list1.add(new DataModel("330203", 2, 1));
         list1.add(new DataModel("330307", 2, 1));
 
-        List<String> code = Arrays.asList("330100","330102","330103","330200","330203","330204","330206","330300","330307","330308");
-
+        List<String> code = Arrays.asList("330100", "330102", "330103", "330200", "330203", "330204", "330206", "330300", "330307", "330308");
 
         Map<String, DataModel> map2 = list.stream().collect(Collectors.toMap(DataModel::getQydm, v -> v));
         list1.forEach(e -> {
@@ -49,7 +49,7 @@ public class Main {
             List<DataModel> value = entry.getValue();
             DataModel temp = new DataModel();
             value.forEach(e -> temp.add2(e));
-          //  DataModel model = value.stream().reduce((x, y) -> x.add3(y)).get();
+            //  DataModel model = value.stream().reduce((x, y) -> x.add3(y)).get();
             //map1.put(entry.getKey()+"00",value.stream().reduce((x,y) -> x.add(y)).get());
             map1.put(entry.getKey() + "00", temp);
         }
@@ -57,26 +57,46 @@ public class Main {
         List<DataModel> list3 = new ArrayList<>();
         DataModel total = new DataModel();
         total.setQydm("000000");
+        total.setQydmName("总计");
         list3.add(total);
         DataModel model = null;
         for (String s : code) {
             if (!map2.containsKey(s) && !map1.containsKey(s)) {
-                model = new DataModel(s,0,0,0,0,0,0);
-                model.setZj();model.setKpzj();
+                model = new DataModel(s, 0, 0, 0, 0, 0, 0);
+                model.setZj();
+                model.setKpzj();
             } else if (s.endsWith("00")) {
                 DataModel model1 = map1.get(s);
                 model = new DataModel(model1);
-                model.setZj();model.setKpzj();
+                model.setZj();
+                model.setKpzj();
                 total.add2(model);
-                total.setZj();total.setKpzj();
+                total.setZj();
+                total.setKpzj();
             } else {
                 model = map2.get(s);
                 model.setZj();
                 model.setKpzj();
             }
             model.setQydm(s);
+            model.setQydmName(QymcNameEnum.getNameByCode(s));
             list3.add(model);
         }
         list3.forEach(System.out::println);
+
+        List<Map<String, Object>> mapList = new ArrayList<>();
+        List<String> fileName = new ArrayList<String>();
+        fileName.add("qydm");fileName.add("qydmName");
+        fileName.addAll(DanWeiEnum.getNameByCode("0"));
+        fileName.addAll(DanWeiEnum.getNameByCode("2"));
+        for (DataModel m : list3) {
+            Map map3 = DtoToMap.dtoToMap(m,fileName);
+            mapList.add(map3);
+        }
+        System.out.println("========================================================================================");
+        for (Map p : mapList) {
+            System.out.print(p);
+            System.out.println(p.get("qydm"));
+        }
     }
 }

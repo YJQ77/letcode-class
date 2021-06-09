@@ -1,8 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.eip.DataModel;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 描述：
@@ -12,4 +12,8 @@ import java.util.List;
  */
 public interface DataModelService {
     List<DataModel> getList();
+
+    List<Map<String,Object>> getMap();
+
+    List<Map<String,Object>> getMap2();
 }

@@ -1,8 +1,10 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.eip.DanWeiEnum;
 import com.example.demo.eip.DataModel;
 import com.example.demo.eip.QymcNameEnum;
 import com.example.demo.service.DataModelService;
+import com.example.demo.util.clazz.DtoToMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -87,5 +89,37 @@ public class DataModelServiceImpl implements DataModelService {
         }
         //list3.forEach(System.out::println);
         return list3;
+    }
+
+    @Override
+    public List<Map<String, Object>> getMap() {
+        List<DataModel> list = getList();
+        List<Map<String, Object>> mapList = new ArrayList<>();
+        List<String> fileName = new ArrayList<String>();
+        fileName.add("qydm");fileName.add("qydmName");
+        fileName.addAll(DanWeiEnum.getNameByCode("0"));
+        fileName.addAll(DanWeiEnum.getNameByCode("1"));
+        fileName.addAll(DanWeiEnum.getNameByCode("3"));
+        for (DataModel m : list) {
+            Map map3 = DtoToMap.dtoToMap(m,fileName);
+            mapList.add(map3);
+        }
+        return mapList;
+    }
+
+    @Override
+    public List<Map<String, Object>> getMap2() {
+        List<DataModel> list = getList();
+        List<Map<String, Object>> mapList = new ArrayList<>();
+        List<String> fileName = new ArrayList<String>();
+        fileName.add("qydm");fileName.add("qydmName");
+        fileName.addAll(DanWeiEnum.getNameByCode("0"));
+        fileName.addAll(DanWeiEnum.getNameByCode("2"));
+        fileName.addAll(DanWeiEnum.getNameByCode("3"));
+        for (DataModel m : list) {
+            Map map3 = DtoToMap.dtoToMap2(m,fileName);
+            mapList.add(map3);
+        }
+        return mapList;
     }
 }

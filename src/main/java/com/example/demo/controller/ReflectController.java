@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.service.DataModelService;
 import com.example.demo.util.clazz.MxtjDto;
 import com.example.demo.util.clazz.ReflectUtil;
 import io.swagger.annotations.ApiOperation;
@@ -10,13 +11,16 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -37,26 +41,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/reflect")
 public class ReflectController {
 
+    @Autowired
+    private DataModelService dataModelService;
+
     @ApiOperation(value = "根据url下载")
     @GetMapping(value = "/get.do")
-    public MxtjDto get() throws IOException {
-        Map<String, Object> map = new LinkedHashMap<>();
-        map.put("qydm", "330100");map.put("glsl", 19);map.put("kpglsl", 12);
-        Map<String, Object> allmap = new LinkedHashMap<String,Object>();
-        Set<String> keys = map.keySet();
-        String s = null;
-        Integer count = 0;
-        for (String key : keys) {
-            s = key.substring(0, 4) + "00";
-            if (allmap.containsKey(s)) {
-                count = ((Integer) allmap.get(s)) + ((Integer) map.get(key));
-            } else {
-                count = ((Integer) map.get(key));
-            }
-            allmap.put(s, count);
+    public List<MxtjDto> get() throws IOException {
+        List<Map<String, Object>> maps = dataModelService.getMap2();
+        List<MxtjDto> list = new ArrayList<>();
+        for (Map<String, Object> map : maps){
+            MxtjDto mxtjDto = (MxtjDto) ReflectUtil.getObject(new MxtjDto(), map);
+            list.add(mxtjDto);
         }
-        map.putAll(allmap);
-        MxtjDto mxtjDto = (MxtjDto) ReflectUtil.getObject(new MxtjDto(), map);
-        return mxtjDto;
+        return list;
     }
 }

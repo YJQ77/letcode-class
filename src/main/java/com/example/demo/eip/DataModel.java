@@ -128,7 +128,7 @@ public class DataModel {
 //    }
 
 
-    public String jisuan(int num1, int num2) {
+    public static String jisuan(int num1, int num2) {
         NumberFormat numberFormat = NumberFormat.getInstance();
         numberFormat.setMaximumFractionDigits(2);
         String result = (num1 == 0 || num2 == 0) ? "0.0" : numberFormat.format((float) num2 / (float) num1 * 100);

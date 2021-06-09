@@ -1,10 +1,12 @@
 package com.example.demo.util.clazz;
 
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators.UUIDGenerator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * 描述：
@@ -38,7 +40,6 @@ public class Main {
         for (Entry entry: allmap.entrySet()) {
             System.out.println(entry);
         }
-
     }
 
 }

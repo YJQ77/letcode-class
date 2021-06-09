@@ -64,4 +64,32 @@ public class DownExcleController {
         return ResponseEntity.ok().headers(httpHeaders).contentType(MediaType.IMAGE_PNG)
                 .body(resource);
     }
+
+
+    @ApiOperation(value = "自己生成下载excle文件下载")
+    @GetMapping(value = "/datamodeldynamic.do")
+    public ResponseEntity<Resource> downfromexcledynamic() throws IOException {
+        //String[] title = {"总计","基层医院","行政单位"};
+        String[] title = {"0","1","3"};
+
+        List<Map<String, Object>> map = dataModelService.getMap();
+
+        SXSSFWorkbook wb = ExcleUtil.getSXSSFWorkbook3("test", title, map, null);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentDispositionFormData("attachment", URLEncoder.encode("test.xlsx", "UTF-8"));
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+        byte[] fileByte = new byte[1024];
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        wb.write(byteArrayOutputStream);
+
+        byteArrayOutputStream.close();
+        fileByte = byteArrayOutputStream.toByteArray();
+
+        Resource resource = new InputStreamResource(
+                new ByteArrayInputStream(fileByte));
+        return ResponseEntity.ok().headers(httpHeaders).contentType(MediaType.IMAGE_PNG)
+                .body(resource);
+    }
 }
