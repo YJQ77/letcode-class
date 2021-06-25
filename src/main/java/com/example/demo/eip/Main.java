@@ -98,5 +98,10 @@ public class Main {
             System.out.print(p);
             System.out.println(p.get("qydm"));
         }
+
+        List<Map<String,Object>> a = new ArrayList<>();
+        Map<Object, List<Map<String, Object>>> qydm = a.stream().collect(Collectors.groupingBy(e -> e.get("qydm")));
+
     }
+
 }
