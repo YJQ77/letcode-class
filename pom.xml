@@ -98,9 +98,9 @@
         </dependency>
 
         <dependency>
-            <groupId>net.bookrain</groupId>
-            <artifactId>ftp</artifactId>
-            <version>0.0.1</version>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>3.8.0</version>
         </dependency>
 
     </dependencies>

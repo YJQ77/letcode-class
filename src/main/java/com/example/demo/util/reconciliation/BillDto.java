@@ -1,5 +1,6 @@
 package com.example.demo.util.reconciliation;
 
+import com.example.demo.elsfk.fk.S;
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -41,5 +42,20 @@ public class BillDto implements Serializable {
                 ", standardUnitCode='" + standardUnitCode + '\'' +
                 ", standardUnitName='" + standardUnitName + '\'' +
                 '}';
+    }
+
+    public String getString(){
+        StringBuffer sb = new StringBuffer();
+        sb.append(this.invoicingPartyCode).append("||")
+                .append(this.invoicingPartyCode).append("||")
+                .append(this.invoicingPartyName).append("||")
+                .append(this.einvoiceType).append("||")
+                .append(this.einvoiceCode).append("||")
+                .append(this.einvoiceNumber).append("||")
+                .append(this.randomNumber).append("||")
+                .append(this.date).append("||")
+                .append("1").append("||")
+                .append("对账票据不存在").append("||");
+        return  sb.toString();
     }
 }

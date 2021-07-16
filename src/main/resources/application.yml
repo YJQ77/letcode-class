@@ -2,3 +2,10 @@ server:
   port: 7777
   servlet:
     context-path: /study
+
+ftp:
+  url: 192.168.202.245
+  port: 21
+  username: ftp01
+  password: nuo@ftp
+  prefix: /home/ftp01/

@@ -16,6 +16,7 @@ import javax.annotation.PreDestroy;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -27,16 +28,27 @@ import org.springframework.stereotype.Component;
 @Component
 public class FtpUtil {
 
-    private final static String prefixdui = "/var/ftp/testftp/duizhang/";
-    private final static String prefixbu = "/var/ftp/testftp/buchuan";
     private final static String sourcePath = "D:\\temp";
     private final static String separator = "/";
+    private final static String tempFileName = "buchuan.txt";
+    private final static String result = "result";
+
+    @Value("${ftp.url}")
+    private String url;
+    @Value("${ftp.port}")
+    private int port;
+    @Value("${ftp.username}")
+    private String username;
+    @Value("${ftp.password}")
+    private String password;
+    @Value("${ftp.prefix}")
+    private String prefix;
 
     private FTPClient ftpClient = null;
 
     @PostConstruct
     public void init() {
-        ftpClient = getFTPClient("172.81.250.30", 21, "testftp", "yjqstc31017");
+        ftpClient = getFTPClient(url, port, username, password);
     }
 
     @PreDestroy
@@ -58,11 +70,7 @@ public class FtpUtil {
         try {
             ftpClient = new FTPClient();
             ftpClient.setConnectTimeout(60000);
-            if (ftpPort != null) {
-                ftpClient.connect(ftpHost, ftpPort);// 连接FTP服务器
-            } else {
-                ftpClient.connect(ftpHost);// 连接FTP服务器
-            }
+            ftpClient.connect(ftpHost, ftpPort);// 连接FTP服务器
             if (FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
                 if (ftpClient.login(ftpUserName, ftpPassword)) {// 登陆FTP服务器
                     if (FTPReply.isPositiveCompletion(ftpClient.sendCommand(
@@ -117,15 +125,16 @@ public class FtpUtil {
      * @return
      */
     public FTPFile[] getFtpFiles(String path) {
-        path = prefixdui + path;
+        path = prefix + path;
         FTPFile[] files = null;
         try {
-            ftpClient.changeWorkingDirectory(path);
-            files = ftpClient.listFiles(path);
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
+            String s = ftpClient.printWorkingDirectory();
+            System.out.println(s);
+            ftpClient.changeWorkingDirectory(new String(path.getBytes(ftpClient.getControlEncoding()), "iso-8859-1"));
+            files = ftpClient.listFiles();
+        } catch (IOException e) {
 
+        }
         return files;
     }
 
@@ -144,21 +153,23 @@ public class FtpUtil {
             FTPFile[] files = getFtpFiles(path);
             BillDto dto = null;
             for (FTPFile ftpFile : files) {
-                intput = ftpClient.retrieveFileStream(ftpFile.getName());
-                reader = new BufferedReader(new InputStreamReader(intput));
-                while ((tempString = reader.readLine()) != null) {
-                    String[] split = tempString.split("\\|\\|");
-                    dto = new BillDto(split[0].trim(), split[1].trim(), Integer.parseInt(split[2].trim()),
-                            split[3].trim(), split[4].trim(), split[5].trim(), split[6].trim(),
-                            split[7].trim(), split[8].trim(), split[9].trim());
-                    list.add(dto);
+                if (ftpFile.isFile()) {
+                    intput = ftpClient.retrieveFileStream(ftpFile.getName());
+                    reader = new BufferedReader(new InputStreamReader(intput));
+                    while ((tempString = reader.readLine()) != null) {
+                        String[] split = tempString.split("\\|\\|");
+                        dto = new BillDto(split[0].trim(), split[1].trim(), Integer.parseInt(split[2].trim()),
+                                split[3].trim(), split[4].trim(), split[5].trim(), split[6].trim(),
+                                split[7].trim(), split[8].trim(), split[9].trim());
+                        list.add(dto);
+                    }
+                    intput.close();
+                    //ftp传输结束
+                    ftpClient.completePendingCommand();
                 }
-                intput.close();
-                //ftp传输结束
-                ftpClient.completePendingCommand();
             }
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
+        } catch (IOException e) {
+
         } finally {
             try {
                 if (reader != null) {
@@ -167,8 +178,7 @@ public class FtpUtil {
                 if (intput != null) {
                     intput.close();
                 }
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
+            } catch (IOException e) {
             }
         }
         return list;
@@ -177,28 +187,25 @@ public class FtpUtil {
     /**
      * 将对账失败的票据信息txt文件上传到ftp
      *
-     * @param path
+     * @param areaCode
+     * @param date
      */
-    public void uploadBuChuan(String path) {
-        String targetPath = prefixbu;
-        String[] split = path.split(separator);
+    public void uploadBuChuan(String areaCode, String date) {
+        String targetPath = prefix + areaCode + separator + date;
         InputStream in = null;
         String filePath = sourcePath;
-        String fileName = "buchuan.txt";
+        String fileName = tempFileName;
         File file = new File(filePath + File.separator + fileName);
         try {
             in = new FileInputStream(file);
-            ftpClient.changeWorkingDirectory(targetPath);
-            for (String s : split) {
-                targetPath = targetPath + separator + s;
-                ftpClient.makeDirectory(s);
-                ftpClient.changeWorkingDirectory(targetPath);
-            }
+            //创建多级目录
+            ftpClient.changeWorkingDirectory(new String(targetPath.getBytes(ftpClient.getControlEncoding()), "iso-8859-1"));
+            ftpClient.makeDirectory(result);
+            ftpClient.changeWorkingDirectory(result);
             //上传到ftp
-            boolean b3 = ftpClient.storeFile(targetPath + separator + fileName, in);
-            System.out.println(b3);
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
+            ftpClient.storeFile(new String((date + "-result.txt").getBytes(ftpClient.getControlEncoding()), "iso-8859-1"), in);
+        } catch (IOException e) {
+
         } finally {
             try {
                 if (in != null) {
@@ -216,10 +223,10 @@ public class FtpUtil {
      * @param list
      * @return
      */
-    public File createTxtFile(List<String> list) {
+    public File createTxtFile(List<BillDto> list) {
         //创建文件
         String filePath = sourcePath;
-        String fileName = "buchuan.txt";
+        String fileName = tempFileName;
         File file = new File(filePath + File.separator + fileName);
         //创建文件写入流，FileWriter无需指定传输字符集编码格式
         FileWriter fw = null;
@@ -229,8 +236,8 @@ public class FtpUtil {
             }
             //如果文件存在，则追加内容；如果文件不存在，则创建文件
             fw = new FileWriter(file, true);
-            for (String s : list) {
-                fw.write(s);
+            for (BillDto billDto : list) {
+                fw.write(billDto.getString() + "\n");
             }
             fw.close();
         } catch (IOException e) {
